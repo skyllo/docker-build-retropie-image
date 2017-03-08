@@ -19,9 +19,17 @@ source $DIR/utils.sh
 # set environment variables
 VERSION_MAJOR="$RETROPIEVERSION"
 IMAGE_SIZE_IN_GB="$IMAGE_SIZE_IN_GB"
+BASE_IMAGE_SIZE=4
 
 
-log "1. Making an ${IMAGE_SIZE_IN_GB}GB image using RetroPie $VERSION_MAJOR"
+# if IMAGE_SIZE_IN_GB is not set then set size to be size of image + roms + bios
+if [ -z $IMAGE_SIZE_IN_GB ]; then
+    TOTAL_FOLDER_BYTES=$(du --total -s -B1 ${ROMS} ${BIOS} | tail -1 | awk '{ print $1; }')
+    TOTAL_FOLDER_GIGABYTES=$(echo $TOTAL_FOLDER_BYTES | awk '{ byte =$1 /1024/1024^2 ; printf "%.0f", byte }')
+    IMAGE_SIZE_IN_GB=$((${TOTAL_FOLDER_GIGABYTES} + ${BASE_IMAGE_SIZE}))
+fi
+
+log "1. Making a ${IMAGE_SIZE_IN_GB}GB image using RetroPie $VERSION_MAJOR"
 
 # download
 log "2. Downloading RetroPie Image $VERSION_MAJOR"
