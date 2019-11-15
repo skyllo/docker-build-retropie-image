@@ -6,7 +6,7 @@ services:
             context: .
             dockerfile: Dockerfile
         environment:
-            - RETROPIEVERSION=4.1
+            - RETROPIEVERSION=4.5.1
         privileged: true
         volumes:
             - ./roms:/workspace/roms
